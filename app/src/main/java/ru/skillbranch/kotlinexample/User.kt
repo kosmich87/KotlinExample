@@ -1,6 +1,8 @@
 package ru.skillbranch.kotlinexample
 
 import androidx.annotation.VisibleForTesting
+import ru.skillbranch.kotlinexample.extensions.email
+import ru.skillbranch.kotlinexample.extensions.phone
 import java.math.BigInteger
 import java.security.MessageDigest
 import java.security.SecureRandom
@@ -8,7 +10,7 @@ import java.security.SecureRandom
 class User private constructor(
     private val firstName: String,
     private val lastName: String?,
-    email: String? = null,
+    var email: String? = null,
     rawPhone: String? = null,
     meta: Map<String, Any>? = null
 ) {
@@ -27,7 +29,7 @@ class User private constructor(
 
     private var phone: String? = null
         set(value) {
-            field = value?.replace("""[^+\d]""".toRegex(), "")
+            field = value?.phone()//replace("""[^+\d]""".toRegex(), "")
         }
 
     private var _login: String? = null
@@ -52,7 +54,7 @@ class User private constructor(
     ) : this(
         firstName = firstName,
         lastName = lastName,
-        email = email,
+        email = email.email(),
         meta = mapOf("auth" to "password")
     ) {
         println("Secondary email constructor")
@@ -143,15 +145,27 @@ class User private constructor(
             phone: String? = null
         ): User {
             val (firstName, lastName) = fullName.fullNameToPair()
+            var phoneTmp = phone?.phone()
+
+            if (!phoneTmp.isNullOrBlank()) {
+                phoneTmp
+                    .let {
+                        if (it.first() != '+' ||
+                            it.length != 12
+                                ) throw IllegalArgumentException("Enter a valid phone number starting with a + and containing 11 digits")
+                    }
+            }
+
 
             return when {
-                !phone.isNullOrBlank() -> User(firstName, lastName, phone)
-                !email.isNullOrBlank() && !password.isNullOrBlank() -> User(
-                    firstName,
-                    lastName,
-                    email,
-                    password
-                )
+                !phoneTmp.isNullOrBlank() -> User(firstName, lastName, phoneTmp)
+                !email.isNullOrBlank() && !password.isNullOrBlank() ->
+                    User(
+                        firstName,
+                        lastName,
+                        email,
+                        password
+                    )
                 else -> throw  IllegalArgumentException("Email or phone must not be null or blank")
             }
         }
