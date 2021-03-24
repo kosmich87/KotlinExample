@@ -179,7 +179,7 @@ class User private constructor(
 
 
             return when {
-                !phoneTmp.isNullOrBlank() && !email.isNullOrBlank() ->
+                phoneTmp != null && email != null ->
                     User(firstName, lastName, if (email.isBlank()) null else email, if (phoneTmp.isBlank()) null else phoneTmp, salt = salt!!, hash = hash!!)
                 !phoneTmp.isNullOrBlank() -> User(firstName, lastName, phoneTmp)
                 !email.isNullOrBlank() && !password.isNullOrBlank() ->
