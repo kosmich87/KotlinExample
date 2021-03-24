@@ -12,7 +12,7 @@ object UserHolder {
         fullName: String,
         email: String,
         password: String
-    ) : User = User.makeUser(fullName, email = email.email(), password = password)
+    ) : User = User.makeUser(fullName, email = email, password = password)
         .also { user ->
             if (checkUserIsCreated(user.login)){
                 throw IllegalArgumentException("A user with this email already exists")
@@ -51,7 +51,7 @@ object UserHolder {
         if (!login.contains('@', false)){
             loginTmp = login.phone()
         }else {
-            loginTmp = login.email()
+            loginTmp = login
         }
         map[loginTmp].let {
             it?.changePassword(it.accessCode!!, it?.generateAccessCode())
@@ -61,5 +61,13 @@ object UserHolder {
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     fun clearHolder(){
         map.clear()
+    }
+
+    fun importUsers(list: List<String>): List<User>{
+        var listOfUser: List<User> = emptyList()
+        for (str in list){
+
+        }
+        return listOfUser
     }
 }
