@@ -64,7 +64,7 @@ object UserHolder {
     }
 
     fun importUsers(list: List<String>): List<User>{
-        var listOfUser: List<User> = emptyList()
+        var listOfUser = mutableListOf<User>()
         for (str in list){
             var (fullName, email, saltHash, phone) = str.split(';').map {it.trim()}
             var user: User = User.makeUser(fullName, email = email, phone = phone, saltHash = saltHash)
@@ -73,7 +73,7 @@ object UserHolder {
                         map[user.login] = user
                     }
                 }
-            listOfUser.plus(user)
+            listOfUser.add(user)
         }
         return listOfUser
     }
