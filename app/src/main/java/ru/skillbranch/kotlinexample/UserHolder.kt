@@ -66,7 +66,14 @@ object UserHolder {
     fun importUsers(list: List<String>): List<User>{
         var listOfUser: List<User> = emptyList()
         for (str in list){
-
+            var (fullName, email, saltHash, phone) = str.split(';').map {it.trim()}
+            var user: User = User.makeUser(fullName, email, phone = phone, saltHash = saltHash)
+                .also { user ->
+                    if (!checkUserIsCreated(user.login)){
+                        map[user.login] = user
+                    }
+                }
+            listOfUser.plus(user)
         }
         return listOfUser
     }

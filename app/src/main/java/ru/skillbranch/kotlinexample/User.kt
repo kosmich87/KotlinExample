@@ -75,6 +75,18 @@ class User private constructor(
         sendAccessCodeToUser(rawPhone, code)
     }
 
+    constructor(
+        firstName: String,
+        lastName: String?,
+        email: String?,
+        phone: String?,
+        salt: String,
+        hash: String
+    ) : this(firstName, lastName, email = email, rawPhone = phone, meta = mapOf("src" to "csv")) {
+        passwordHash = hash
+        this.salt = salt
+    }
+
     init {
         check(firstName.isNotBlank()) { "FirstName must not be blank" }
         check(!email.isNullOrBlank() || !rawPhone.isNullOrBlank()) { "Email or phone must be not null or blank" }
@@ -142,7 +154,8 @@ class User private constructor(
             fullName: String,
             email: String? = null,
             password: String? = null,
-            phone: String? = null
+            phone: String? = null,
+            saltHash: String? = null
         ): User {
             val (firstName, lastName) = fullName.fullNameToPair()
             var phoneTmp = phone?.phone()
@@ -156,8 +169,18 @@ class User private constructor(
                     }
             }
 
+            var salt: String? = null
+            var hash: String? = null
+            if (!saltHash.isNullOrBlank()){
+                var (s, h) = saltHash.split(':')
+                salt = s
+                hash = h
+            }
+
 
             return when {
+                !phoneTmp.isNullOrBlank() && !email.isNullOrBlank() ->
+                    User(firstName, lastName, if (email.isBlank()) null else email, if (phoneTmp.isBlank()) null else phoneTmp, salt = salt!!, hash = hash!!)
                 !phoneTmp.isNullOrBlank() -> User(firstName, lastName, phoneTmp)
                 !email.isNullOrBlank() && !password.isNullOrBlank() ->
                     User(
