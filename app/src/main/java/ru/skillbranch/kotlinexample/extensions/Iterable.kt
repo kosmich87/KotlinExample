@@ -8,6 +8,7 @@ fun String.email() = this.trim().toLowerCase()
 
 fun String.isValidEmail() = Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
-/*fun List<T>.dropLastUntil(predicate: (T) -> Boolean): List<T>{
-
-}*/
+fun <T> List<T>.dropLastUntil(predicate: (T) -> Boolean): () -> List<T> = {
+    this.dropLastWhile(predicate)
+    this.dropLast(1)
+}
