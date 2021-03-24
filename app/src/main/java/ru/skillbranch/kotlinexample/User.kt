@@ -80,7 +80,7 @@ class User private constructor(
         check(firstName.isNotBlank()) { "FirstName must not be blank" }
         check(!email.isNullOrBlank() || !rawPhone.isNullOrBlank()) { "Email or phone must be not null or blank" }
 
-        if (rawPhone.isNullOrBlank()){
+        if (rawPhone.isNullOrBlank() && !email.isNullOrBlank()){
             check(email!!.isValidEmail()) {"Email not valid"}
         }
 
