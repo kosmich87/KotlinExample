@@ -2,6 +2,7 @@ package ru.skillbranch.kotlinexample
 
 import androidx.annotation.VisibleForTesting
 import ru.skillbranch.kotlinexample.extensions.email
+import ru.skillbranch.kotlinexample.extensions.isValidEmail
 import ru.skillbranch.kotlinexample.extensions.phone
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -78,6 +79,10 @@ class User private constructor(
     init {
         check(firstName.isNotBlank()) { "FirstName must not be blank" }
         check(!email.isNullOrBlank() || !rawPhone.isNullOrBlank()) { "Email or phone must be not null or blank" }
+
+        if (rawPhone.isNullOrBlank()){
+            check(email!!.isValidEmail()) {"Email not valid"}
+        }
 
         phone = rawPhone
         login = email ?: phone!!
