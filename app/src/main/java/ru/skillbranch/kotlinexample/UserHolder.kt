@@ -63,7 +63,7 @@ object UserHolder {
         map.clear()
     }
 
-    /*fun importUsers(list: List<String>): List<User>{
+    fun importUsers(list: List<String>): List<User>{
         var listOfUser = mutableListOf<User>()
         for (str in list){
             var (fullName, email, saltHash, phone) = str.split(';').map {it.trim()}
@@ -76,5 +76,5 @@ object UserHolder {
             listOfUser.add(user)
         }
         return listOfUser
-    }*/
+    }
 }
