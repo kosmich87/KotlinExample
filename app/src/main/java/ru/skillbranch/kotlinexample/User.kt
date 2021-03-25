@@ -169,8 +169,8 @@ class User private constructor(
                     }
             }
 
-            var salt: String? = null
-            var hash: String? = null
+            var salt: String = ""
+            var hash: String = ""
             if (!saltHash.isNullOrBlank()){
                 var (s, h) = saltHash.split(':')
                 salt = s
@@ -180,7 +180,7 @@ class User private constructor(
 
             return when {
                 phoneTmp != null && email != null ->
-                    User(firstName, lastName, if (email.isBlank()) null else email, if (phoneTmp.isBlank()) null else phoneTmp, salt = salt!!, hash = hash!!)
+                    User(firstName, lastName, if (email.isBlank()) null else email, if (phoneTmp.isBlank()) null else phoneTmp, salt = salt, hash = hash)
                 !phoneTmp.isNullOrBlank() -> User(firstName, lastName, phoneTmp)
                 !email.isNullOrBlank() && !password.isNullOrBlank() ->
                     User(
